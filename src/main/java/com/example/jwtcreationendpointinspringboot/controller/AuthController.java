@@ -3,9 +3,7 @@ package com.example.jwtcreationendpointinspringboot.controller;
 import com.example.jwtcreationendpointinspringboot.service.JwtKeyService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import lombok.Data;
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,13 +33,12 @@ public class AuthController {
             byte[] decodedKey = Base64.getDecoder().decode(secretKeyBase64);
             SecretKey key = Keys.hmacShaKeyFor(decodedKey);
 
-
             String token = Jwts.builder()
                     .subject(loginRequest.getUsername())
                     .issuedAt(new Date())
                     .expiration(new Date(System.currentTimeMillis() + 86400000)) // 1 day expiration
-                    .signWith(key)
-                    .compact();
+                    .signWith(key).compact();
+
             return ResponseEntity.ok(new JwtResponse(token));
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
@@ -60,5 +57,9 @@ class JwtResponse {
 
     public JwtResponse(String token) {
         this.token = token;
+    }
+
+    public String getToken() {
+        return token;
     }
 }
