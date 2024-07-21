@@ -2,6 +2,8 @@ package com.example.jwtcreationendpointinspringboot.service;
 
 import com.example.jwtcreationendpointinspringboot.entity.JwtKey;
 import com.example.jwtcreationendpointinspringboot.repository.JwtKeyRepository;
+import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.KeyGenerator;
@@ -13,10 +15,29 @@ import java.util.Optional;
 
 @Service
 public class JwtKeyService {
-    JwtKeyRepository jwtKeyRepository;
+    private final JwtKeyRepository jwtKeyRepository;
+    private SecretKey cachedKey;
 
     public JwtKeyService(JwtKeyRepository jwtKeyRepository) {
         this.jwtKeyRepository = jwtKeyRepository;
+    }
+
+    @PostConstruct
+    public void init() throws NoSuchAlgorithmException {
+        loadSecretKey();
+    }
+
+    public SecretKey getCachedKey() throws NoSuchAlgorithmException {
+        if (cachedKey == null) {
+            loadSecretKey();
+        }
+        return cachedKey;
+    }
+
+    private void loadSecretKey() throws NoSuchAlgorithmException {
+        String latestKey = getLatestKey();
+        byte[] decodedKey = Base64.getDecoder().decode(latestKey);
+        cachedKey = Keys.hmacShaKeyFor(decodedKey);
     }
 
     public String generateAndSaveKey() throws NoSuchAlgorithmException {
@@ -27,7 +48,7 @@ public class JwtKeyService {
 
         JwtKey jwtKey = JwtKey.builder().secretKey(encodeKey).createdAt(LocalDateTime.now()).build();
         jwtKeyRepository.save(jwtKey);
-
+        loadSecretKey();
         return encodeKey;
     }
 
