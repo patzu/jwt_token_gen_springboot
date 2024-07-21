@@ -175,4 +175,4 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 
 ## Further Reading
 
-For a comprehensive guide on securing JWTs, generating, and managing secret keys using Spring Boot, check out this [Medium article](https://medium.com/@davoud.badamchi/securing-jwts-comprehensive-guide-to-generating-and-managing-secret-keys-using-spring-boot-0f943186f4b0) by Davoud Badamchi.
+For a comprehensive guide on securing JWTs, generating, and managing secret keys using Spring Boot, check out this [Medium article](https://medium.com/@davoud.badamchi/securing-jwts-comprehensive-guide-to-generating-and-managing-secret-keys-using-spring-boot-0f943186f4b0).
